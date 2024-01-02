@@ -19,8 +19,8 @@ public class MovePlayer : MonoBehaviour
     private GunSystem scriptGunSystem;*/
 
     //Barra de vida;
-    /*public GameObject HealthBar;
-    private HealthBar scriptHealthBar;*/
+    public GameObject HealthBar;
+    private HealthBar scriptHealthBar;
 
     // Start is called before the first frame update
     void Start()
@@ -39,15 +39,15 @@ public class MovePlayer : MonoBehaviour
         //scriptGunSystem = GunSystem.GetComponent<GunSystem>();
 
         health = maxHealth;
-        /*scriptHealthBar = HealthBar.GetComponent<HealthBar>();
-        scriptHealthBar.setMaxHealth(maxHealth);*/
+        scriptHealthBar = HealthBar.GetComponent<HealthBar>();
+        scriptHealthBar.setMaxHealth(maxHealth);
     }
 
     //RECIBIR DAÑO Y MORIR
     public void TakeDamage(int damage)
     {
         health -= damage;
-        //scriptHealthBar.SetHealth(health);
+        scriptHealthBar.SetHealth(health);
         //if (health <= 0) Die();
     }
 
@@ -55,7 +55,7 @@ public class MovePlayer : MonoBehaviour
     {
         health += healthAmount;
         if (health > maxHealth) health = maxHealth;
-        //scriptHealthBar.SetHealth(health);
+        scriptHealthBar.SetHealth(health);
     }
 
     // Update is called once per frame
@@ -72,6 +72,8 @@ public class MovePlayer : MonoBehaviour
         {
             scriptGunSystem.selectGun(1, right);
         }*/
+
+        if (Input.GetKey(KeyCode.H)) TakeDamage(25);
 
         // Left-right movement
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
@@ -162,7 +164,7 @@ public class MovePlayer : MonoBehaviour
     public void addBullets(int id, int num)
     {
         scriptGunSystem.addBullets(id, num);
-    }
+    }*/
 
     void OnTriggerEnter(Collider other)
     {
@@ -179,5 +181,5 @@ public class MovePlayer : MonoBehaviour
                 TakeDamage(cross.damage);
             }
         }
-    }*/
+    }
 }

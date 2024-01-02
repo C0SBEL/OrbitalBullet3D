@@ -94,7 +94,7 @@ public class Bullet : MonoBehaviour
         //Debug.Log("BalaColisionaObjeto");
 
         // Verificar colisión con otros objetos y realizar las acciones necesarias
-        if (other.CompareTag("Object") /*|| other.CompareTag("Player") || other.CompareTag("Ghost") || other.CompareTag("Vampire") || other.CompareTag("Digger")*/)
+        if (other.CompareTag("Object") || other.CompareTag("Player") || other.CompareTag("Enemy"))
         {
             // Desactivar la bala al colisionar con el objeto destino
             DisableBullet();
