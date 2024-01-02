@@ -4,19 +4,58 @@ using UnityEngine;
 
 public class MovePlayer : MonoBehaviour
 {
+    //Health
+    public int maxHealth;
+    public int health;
+
     public float rotationSpeed, jumpSpeed, gravity;
     Vector3 startDirection;
     float speedY;
+
     private Animator anim;
+
+    private bool right;
+    /*public GameObject GunSystem;
+    private GunSystem scriptGunSystem;*/
+
+    //Barra de vida;
+    /*public GameObject HealthBar;
+    private HealthBar scriptHealthBar;*/
+
     // Start is called before the first frame update
     void Start()
     {
         anim = GetComponent<Animator>(); //componente de animacion
         anim.SetBool("Walk", false);
+
         startDirection = transform.position - transform.parent.position;
         startDirection.y = 0.0f;
         startDirection.Normalize();
+
         speedY = 0;
+
+        right = true;
+
+        //scriptGunSystem = GunSystem.GetComponent<GunSystem>();
+
+        health = maxHealth;
+        /*scriptHealthBar = HealthBar.GetComponent<HealthBar>();
+        scriptHealthBar.setMaxHealth(maxHealth);*/
+    }
+
+    //RECIBIR DAÑO Y MORIR
+    public void TakeDamage(int damage)
+    {
+        health -= damage;
+        //scriptHealthBar.SetHealth(health);
+        //if (health <= 0) Die();
+    }
+
+    public void GainHealth(int healthAmount)
+    {
+        health += healthAmount;
+        if (health > maxHealth) health = maxHealth;
+        //scriptHealthBar.SetHealth(health);
     }
 
     // Update is called once per frame
@@ -24,6 +63,15 @@ public class MovePlayer : MonoBehaviour
     {
         CharacterController charControl = GetComponent<CharacterController>();
         Vector3 position;
+
+        /*if (Input.GetKey(KeyCode.Alpha1))
+        {
+            scriptGunSystem.selectGun(0, right);
+        }
+        if (Input.GetKey(KeyCode.Alpha2))
+        {
+            scriptGunSystem.selectGun(1, right);
+        }*/
 
         // Left-right movement
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
@@ -37,6 +85,7 @@ public class MovePlayer : MonoBehaviour
             direction = position - transform.parent.position;
             if (Input.GetKey(KeyCode.A))
             {
+                right = false;
                 target = transform.parent.position + Quaternion.AngleAxis(angle, Vector3.up) * direction;
                 if (charControl.Move(target - position) != CollisionFlags.None)
                 {
@@ -46,6 +95,7 @@ public class MovePlayer : MonoBehaviour
             }
             if (Input.GetKey(KeyCode.D))
             {
+                right = true;
                 target = transform.parent.position + Quaternion.AngleAxis(-angle, Vector3.up) * direction;
                 if (charControl.Move(target - position) != CollisionFlags.None)
                 {
@@ -64,12 +114,24 @@ public class MovePlayer : MonoBehaviour
         currentDirection.Normalize();
         // Change orientation of player accordingly
         Quaternion orientation;
-        if ((startDirection - currentDirection).magnitude < 1e-3)
-            orientation = Quaternion.AngleAxis(0.0f, Vector3.up);
-        else if ((startDirection + currentDirection).magnitude < 1e-3)
-            orientation = Quaternion.AngleAxis(180.0f, Vector3.up);
+        if (!right)
+        {
+            if ((startDirection - currentDirection).magnitude < 1e-3)
+                orientation = Quaternion.AngleAxis(0.0f, Vector3.up);
+            else if ((startDirection + currentDirection).magnitude < 1e-3)
+                orientation = Quaternion.AngleAxis(180.0f, Vector3.up);
+            else
+                orientation = Quaternion.FromToRotation(startDirection, currentDirection);
+        }
         else
-            orientation = Quaternion.FromToRotation(startDirection, currentDirection);
+        {
+            if ((startDirection - currentDirection).magnitude < 1e-3)
+                orientation = Quaternion.AngleAxis(180.0f, Vector3.up);
+            else if ((startDirection + currentDirection).magnitude < 1e-3)
+                orientation = Quaternion.AngleAxis(0.0f, Vector3.up);
+            else
+                orientation = Quaternion.FromToRotation(startDirection * -1.0f, currentDirection);
+        }
         transform.rotation = orientation;
 
         // Apply up-down movement
@@ -89,4 +151,33 @@ public class MovePlayer : MonoBehaviour
         else
             speedY -= gravity * Time.deltaTime;
     }
+
+    /*
+     * public void UnlockGun(int id)
+    {
+        scriptGunSystem.UnlockGun(id);
+        scriptGunSystem.selectGun(id, right);
+    }
+
+    public void addBullets(int id, int num)
+    {
+        scriptGunSystem.addBullets(id, num);
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Cross"))
+        {
+            //Debug.Log("GHOST: Bala detectada");
+            // Acceder al componente BulletC de la bala que ha colisionado
+            Cross cross = other.GetComponent<Cross>();
+
+            // Verificar si el componente Bala existe en el objeto colisionado
+            if (cross != null)
+            {
+                // Obtener el daño de la bala y aplicarlo a la función TakeDamage
+                TakeDamage(cross.damage);
+            }
+        }
+    }*/
 }
