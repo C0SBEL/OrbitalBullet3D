@@ -8,6 +8,9 @@ public class Ghost : MonoBehaviour
     public int maxHealth;
     private int health;
 
+    public int maxShield;
+    private int shield;
+
     public float speed; // Velocidad de la bala
     public GameObject center;
     private bool moving = false;
@@ -26,6 +29,9 @@ public class Ghost : MonoBehaviour
     public GameObject HealthBar;
     private HealthBar scriptHealthBar;
 
+    public GameObject ShieldBar;
+    private HealthBar scriptShieldBar;
+
     //Detectar player
     public float distanceRange;
     public Transform player;
@@ -34,8 +40,14 @@ public class Ghost : MonoBehaviour
     void Start()
     {
         health = maxHealth;
+        shield = maxShield;
+
         scriptHealthBar = HealthBar.GetComponent<HealthBar>();
         scriptHealthBar.setMaxHealth(maxHealth);
+        HealthBar.SetActive(false);
+
+        scriptShieldBar = ShieldBar.GetComponent<HealthBar>();
+        scriptShieldBar.setMaxHealth(maxShield);
 
         /*ghostAnimator = GetComponent<Animator>();
 
@@ -57,8 +69,23 @@ public class Ghost : MonoBehaviour
     //RECIBIR DAÑO Y MORIR
     public void TakeDamage(int damage)
     {
-        health -= damage;
-        scriptHealthBar.SetHealth(health);
+        shield -= damage;
+        if (shield > 0)
+        {
+            //Debug.Log("Shield");
+            scriptShieldBar.SetHealth(shield);
+        }
+        else if (shield <= 0 && ShieldBar.activeSelf)
+        {
+            HealthBar.SetActive(true);
+            ShieldBar.SetActive(false);
+        }
+        else if (shield <= 0)
+        {
+            //Debug.Log("Health");
+            health -= damage;
+            scriptHealthBar.SetHealth(health);
+        }
         if (health <= 0) Die();
     }
 
@@ -161,7 +188,7 @@ public class Ghost : MonoBehaviour
 
         if (other.CompareTag("Bullet"))
         {
-            Debug.Log("GHOST: Bala detectada");
+            //Debug.Log("GHOST: Bala detectada");
             // Acceder al componente BulletC de la bala que ha colisionado
             Bullet bullet = other.GetComponent<Bullet>();
 
