@@ -5,7 +5,6 @@ using UnityEngine;
 public class Lantern : MonoBehaviour
 {
     public int damage;
-    public float speed = 5f;
     public float movingTime;
 
     private bool moving = false;
@@ -22,7 +21,6 @@ public class Lantern : MonoBehaviour
 
     IEnumerator MoveLantern()
     {
-        //Debug.Log("MoveLantern()");
         moving = true;
 
         float startTime = Time.time;
@@ -31,11 +29,12 @@ public class Lantern : MonoBehaviour
         while (Time.time - startTime <= movingTime) // Duración total del movimiento
         {
             float t = (Time.time - startTime) / movingTime; // Normaliza el tiempo entre 0 y 1
-            transform.position = Vector3.Slerp(startPosition, target, t * speed);
+            transform.position = Vector3.Slerp(startPosition, target, t);
 
             yield return null; // Espera hasta el siguiente frame
         }
 
+        yield return new WaitForSeconds(0.25f);
         DisableLantern();
     }
 

@@ -22,7 +22,7 @@ public class Ghost : MonoBehaviour
     private Lantern scriptLantern;
     public Transform startPoint;
 
-    //Animator ghostAnimator;
+    Animator ghostAnimator;
     private bool holding = false;
 
     //Barra de vida;
@@ -49,10 +49,10 @@ public class Ghost : MonoBehaviour
         scriptShieldBar = ShieldBar.GetComponent<HealthBar>();
         scriptShieldBar.setMaxHealth(maxShield);
 
-        /*ghostAnimator = GetComponent<Animator>();
+        ghostAnimator = GetComponent<Animator>();
 
         ghostAnimator.SetBool("Hold", false);
-        ghostAnimator.SetBool("Die", false);*/
+        ghostAnimator.SetBool("Die", false);
     }
 
     // Update is called once per frame
@@ -102,7 +102,7 @@ public class Ghost : MonoBehaviour
         HealthBar.SetActive(false);
 
         moving = false;
-        //ghostAnimator.SetBool("Die", true);
+        ghostAnimator.SetBool("Die", true);
 
         StartCoroutine(WaitForAnimationToEnd());
         //gameObject.SetActive(false);
@@ -125,12 +125,12 @@ public class Ghost : MonoBehaviour
             transform.RotateAround(center.transform.position, new(0, 1, 0), -speed * Time.deltaTime);
 
             //Miro si el jugador está en rango y no sujetamos nada
-            /*if (!holding && JugadorEnRango())
+            if (!holding && JugadorEnRango())
             {
                 ghostAnimator.SetBool("Hold", true);
-            }*/
+            }
 
-            if (!holding /*&& ghostAnimator.GetBool("Hold")*/)
+            if (!holding && ghostAnimator.GetBool("Hold"))
             {
                 holding = true;
                 time = 0;
@@ -152,11 +152,15 @@ public class Ghost : MonoBehaviour
 
     bool JugadorEnRango()
     {
-        // Verificar si el player está dentro de un rango de ataque
-        if (player != null)
+
+        Collider[] colliders = Physics.OverlapSphere(transform.position, distanceRange);
+
+        foreach (Collider col in colliders)
         {
-            float distanciaAlJugador = Vector3.Distance(transform.position, player.position);
-            return distanciaAlJugador < distanceRange;
+            if (col.CompareTag("Player"))
+            {
+                return true;
+            }
         }
 
         return false;
@@ -172,7 +176,7 @@ public class Ghost : MonoBehaviour
             scriptLantern.ShootLantern(player.transform);
         }
 
-        //ghostAnimator.SetBool("Hold", false);
+        ghostAnimator.SetBool("Hold", false);
         holding = false;
     }
 

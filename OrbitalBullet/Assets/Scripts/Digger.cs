@@ -19,8 +19,9 @@ public class Digger : MonoBehaviour
     private float time;
 
     public GameObject PumpkinObject;
-    //private Pumpkin scriptPumpkin;
     public Transform startPoint;
+
+    Animator diggerAnimator;
 
     //Barra de vida;
     public GameObject HealthBar;
@@ -42,10 +43,10 @@ public class Digger : MonoBehaviour
         scriptShieldBar = ShieldBar.GetComponent<HealthBar>();
         scriptShieldBar.setMaxHealth(maxShield);
 
-        /*ghostAnimator = GetComponent<Animator>();
+        diggerAnimator = GetComponent<Animator>();
 
-        ghostAnimator.SetBool("Hold", false);
-        ghostAnimator.SetBool("Die", false);*/
+        diggerAnimator.SetBool("Hold", true);
+        diggerAnimator.SetBool("Die", false);
     }
 
     // Update is called once per frame
@@ -87,7 +88,7 @@ public class Digger : MonoBehaviour
         HealthBar.SetActive(false);
 
         moving = false;
-        //ghostAnimator.SetBool("Die", true);
+        diggerAnimator.SetBool("Die", true);
 
         StartCoroutine(WaitForAnimationToEnd());
         //gameObject.SetActive(false);
@@ -133,7 +134,7 @@ public class Digger : MonoBehaviour
     //TRIGGERS Y COLISIONES//
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("DOGGER: " + other.tag + " detectado/a");
+        //Debug.Log("DOGGER: " + other.tag + " detectado/a");
         // Verificar colisión con otros objetos y realizar las acciones necesarias
         if (other.CompareTag("Object") || other.CompareTag("Player"))
         {

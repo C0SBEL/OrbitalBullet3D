@@ -22,7 +22,7 @@ public class Vampire : MonoBehaviour
     private Cross scriptCross;
     public Transform startPoint;
 
-    //Animator ghostAnimator;
+    Animator vampireAnimator;
     private bool holding = false;
 
     //Barra de vida;
@@ -33,7 +33,7 @@ public class Vampire : MonoBehaviour
     private HealthBar scriptShieldBar;
 
     //Detectar player
-    //public float distanceRange;
+    public float distanceRange;
     public Transform player;
 
     // Start is called before the first frame update
@@ -49,10 +49,9 @@ public class Vampire : MonoBehaviour
         scriptShieldBar = ShieldBar.GetComponent<HealthBar>();
         scriptShieldBar.setMaxHealth(maxShield);
 
-        /*ghostAnimator = GetComponent<Animator>();
+        vampireAnimator = GetComponent<Animator>();
 
-        ghostAnimator.SetBool("Hold", false);
-        ghostAnimator.SetBool("Die", false);*/
+        vampireAnimator.SetBool("Die", false);
     }
 
     // Update is called once per frame
@@ -91,16 +90,14 @@ public class Vampire : MonoBehaviour
 
     private void Die()
     {
+        moving = false;
         if (scriptCross != null)
         {
-            // Activar la bala
             scriptCross.DisableCross();
         }
 
         HealthBar.SetActive(false);
-
-        moving = false;
-        //ghostAnimator.SetBool("Die", true);
+        vampireAnimator.SetBool("Die", true);
 
         StartCoroutine(WaitForAnimationToEnd());
         //gameObject.SetActive(false);
@@ -122,13 +119,7 @@ public class Vampire : MonoBehaviour
             //Gira hacia la izquierda, para cambiar a la derecha poner la speed a negativo
             transform.RotateAround(center.transform.position, new(0, 1, 0), speed * Time.deltaTime);
 
-            //Miro si el jugador está en rango y no sujetamos nada
-            /*if (!holding && JugadorEnRango())
-            {
-                ghostAnimator.SetBool("Hold", true);
-            }*/
-
-            if (!holding /*&& ghostAnimator.GetBool("Hold")*/)
+            if (!holding)
             {
                 //Debug.Log("CREAR CRUZ");
                 holding = true;
@@ -149,6 +140,22 @@ public class Vampire : MonoBehaviour
         //transform.position = startPoint.position;
     }
 
+    /*bool JugadorEnRango()
+    {
+
+        Collider[] colliders = Physics.OverlapSphere(transform.position, distanceRange);
+
+        foreach (Collider col in colliders)
+        {
+            if (col.CompareTag("Player"))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }*/
+
     void ShootCross()
     {
         //Debug.Log("DISPARAR CRUZ");
@@ -160,7 +167,6 @@ public class Vampire : MonoBehaviour
             scriptCross.ShootCross();
         }
 
-        //ghostAnimator.SetBool("Hold", false);
         holding = false;
     }
 

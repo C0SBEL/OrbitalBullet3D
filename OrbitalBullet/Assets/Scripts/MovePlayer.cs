@@ -22,9 +22,21 @@ public class MovePlayer : MonoBehaviour
     public GameObject HealthBar;
     private HealthBar scriptHealthBar;
 
+    private bool godMode = false;
+
+    //Dodge
+    private int originalLayer;
+    private int dodgeLayer;
+    public float dodgeTime;
+    public float dodgeWaitTime;
+    private bool isDodging = false;
+
     // Start is called before the first frame update
     void Start()
     {
+        originalLayer = gameObject.layer;
+        dodgeLayer = 8; //Dodge Layer
+
         anim = GetComponent<Animator>(); //componente de animacion
         anim.SetBool("Walk", false);
 
@@ -46,8 +58,11 @@ public class MovePlayer : MonoBehaviour
     //RECIBIR DA�O Y MORIR
     public void TakeDamage(int damage)
     {
-        health -= damage;
-        scriptHealthBar.SetHealth(health);
+        if (!godMode)
+        {
+            health -= damage;
+            scriptHealthBar.SetHealth(health);
+        }
         //if (health <= 0) Die();
     }
 
@@ -76,6 +91,11 @@ public class MovePlayer : MonoBehaviour
         {
             scriptGunSystem.selectGun(1, right);
         }*/
+
+        if (Input.GetKey(KeyCode.T))
+        {
+            if (!isDodging) StartCoroutine(DoDodge());
+        }
 
         if (Input.GetKey(KeyCode.H)) TakeDamage(25);
 
@@ -169,6 +189,22 @@ public class MovePlayer : MonoBehaviour
     {
         scriptGunSystem.addBullets(id, num);
     }*/
+
+    private IEnumerator DoDodge()
+    {
+        isDodging = true;
+        godMode = true;
+        gameObject.layer = dodgeLayer;
+        rotationSpeed += 100;
+
+        yield return new WaitForSeconds(dodgeTime);
+
+        gameObject.layer = originalLayer;
+        rotationSpeed -= 100;
+
+        yield return new WaitForSeconds(dodgeWaitTime);
+        isDodging = false;
+    }
 
     void OnTriggerEnter(Collider other)
     {
