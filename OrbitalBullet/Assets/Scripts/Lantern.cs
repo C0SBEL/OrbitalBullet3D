@@ -85,7 +85,7 @@ public class Lantern : MonoBehaviour
         // Verificar colisión con otros objetos y realizar las acciones necesarias
         if (other.CompareTag("Object") || other.CompareTag("Player"))
         {
-            Debug.Log("LANTERN: Colisión Obstaculo detectada");
+            //Debug.Log("LANTERN: Colisión Obstaculo detectada");
             DisableLantern();
         }
     }

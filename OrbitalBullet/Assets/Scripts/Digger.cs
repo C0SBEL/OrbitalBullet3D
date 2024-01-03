@@ -8,6 +8,9 @@ public class Digger : MonoBehaviour
     public int maxHealth;
     private int health;
 
+    public int maxShield;
+    private int shield;
+
     public float speed; // Velocidad de la bala
     public GameObject center;
     private bool moving = false;
@@ -23,12 +26,21 @@ public class Digger : MonoBehaviour
     public GameObject HealthBar;
     private HealthBar scriptHealthBar;
 
+    public GameObject ShieldBar;
+    private HealthBar scriptShieldBar;
+
     // Start is called before the first frame update
     void Start()
     {
         health = maxHealth;
+        shield = maxShield; 
+
         scriptHealthBar = HealthBar.GetComponent<HealthBar>();
         scriptHealthBar.setMaxHealth(maxHealth);
+        HealthBar.SetActive(false);
+
+        scriptShieldBar = ShieldBar.GetComponent<HealthBar>();
+        scriptShieldBar.setMaxHealth(maxShield);
 
         /*ghostAnimator = GetComponent<Animator>();
 
@@ -50,8 +62,23 @@ public class Digger : MonoBehaviour
     //RECIBIR DAÑO Y MORIR
     public void TakeDamage(int damage)
     {
-        health -= damage;
-        scriptHealthBar.SetHealth(health);
+        shield -= damage;
+        if (shield > 0)
+        {
+            //Debug.Log("Shield");
+            scriptShieldBar.SetHealth(shield);
+        }
+        else if (shield <= 0 && ShieldBar.activeSelf)
+        {
+            HealthBar.SetActive(true);
+            ShieldBar.SetActive(false);
+        }
+        else if (shield <= 0)
+        {
+            //Debug.Log("Health");
+            health -= damage;
+            scriptHealthBar.SetHealth(health);
+        }
         if (health <= 0) Die();
     }
 
@@ -106,16 +133,17 @@ public class Digger : MonoBehaviour
     //TRIGGERS Y COLISIONES//
     void OnTriggerEnter(Collider other)
     {
+        Debug.Log("DOGGER: " + other.tag + " detectado/a");
         // Verificar colisión con otros objetos y realizar las acciones necesarias
         if (other.CompareTag("Object") || other.CompareTag("Player"))
         {
+            //Debug.Log("Colision: " + other.tag);
             speed *= -1;
             transform.Rotate(0f, 180f, 0f);
         }
 
         if (other.CompareTag("Bullet"))
         {
-            Debug.Log("GHOST: Bala detectada");
             // Acceder al componente BulletC de la bala que ha colisionado
             Bullet bullet = other.GetComponent<Bullet>();
 

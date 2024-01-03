@@ -49,9 +49,11 @@ public class Pumpkin : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        Debug.Log("Colision: " + other.tag);
         // Verificar colisión con otros objetos y realizar las acciones necesarias
         if (other.CompareTag("Player"))
         {
+            Debug.Log("PLAYER");
             Blow();
         }
     }
