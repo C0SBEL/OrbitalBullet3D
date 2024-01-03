@@ -43,7 +43,7 @@ public class MovePlayer : MonoBehaviour
         scriptHealthBar.setMaxHealth(maxHealth);
     }
 
-    //RECIBIR DAÑO Y MORIR
+    //RECIBIR DAï¿½O Y MORIR
     public void TakeDamage(int damage)
     {
         health -= damage;
@@ -56,6 +56,10 @@ public class MovePlayer : MonoBehaviour
         health += healthAmount;
         if (health > maxHealth) health = maxHealth;
         scriptHealthBar.SetHealth(health);
+    }
+
+    public void Jump() {
+        speedY = jumpSpeed;
     }
 
     // Update is called once per frame
@@ -177,7 +181,7 @@ public class MovePlayer : MonoBehaviour
             // Verificar si el componente Bala existe en el objeto colisionado
             if (cross != null)
             {
-                // Obtener el daño de la bala y aplicarlo a la función TakeDamage
+                // Obtener el daï¿½o de la bala y aplicarlo a la funciï¿½n TakeDamage
                 TakeDamage(cross.damage);
             }
         }

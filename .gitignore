@@ -3,8 +3,10 @@
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
 #
 /OrbitalBullet/Library/
-/Llibrary/
-/Temp/
+/OrbitalBullet/Logs/
+/OrbitalBullet/Temp
+/[Ll]ibrary/
+/[Tt]emp/
 /[Oo]bj/
 /Build/
 /Builds/
