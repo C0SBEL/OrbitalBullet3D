@@ -18,7 +18,7 @@ public class FollowPlayer : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    public void Update()
     {
         // Compute current direction
         Vector3 currentDirection = player.transform.position - player.transform.parent.position;
@@ -36,7 +36,6 @@ public class FollowPlayer : MonoBehaviour
 
         Vector3 pos = transform.position;
         pos.y = player.transform.position.y + 3;
-
         transform.position = pos;
 
 
