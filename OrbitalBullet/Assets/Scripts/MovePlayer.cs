@@ -11,10 +11,14 @@ public class MovePlayer : MonoBehaviour
     public float rotationSpeed, jumpSpeed, gravity;
     Vector3 startDirection;
     float speedY;
+    private float speed;
 
     private Animator anim;
 
     private bool right;
+
+    //GunSystem
+    //private int gunId;
     /*public GameObject GunSystem;
     private GunSystem scriptGunSystem;*/
 
@@ -31,6 +35,11 @@ public class MovePlayer : MonoBehaviour
     public float dodgeWaitTime;
     private bool isDodging = false;
 
+    //Trap
+    private bool onTrap = false;
+    public int graveTrapDamage;
+    public int graveTrapSpeed;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -45,6 +54,7 @@ public class MovePlayer : MonoBehaviour
         startDirection.Normalize();
 
         speedY = 0;
+        speed = rotationSpeed;
 
         right = true;
 
@@ -73,8 +83,35 @@ public class MovePlayer : MonoBehaviour
         scriptHealthBar.SetHealth(health);
     }
 
-    public void Jump() {
+    public void Jump()
+    {
         speedY = jumpSpeed;
+    }
+
+    void Update()
+    {
+        /*if (Input.GetKeyDown(KeyCode.P))
+        {
+            if (gunId == 0)
+            {
+                if (scriptGunSystem.selectGun(1, right)) gunId = 1;
+            }
+            else if (gunId == 1)
+            {
+                if (scriptGunSystem.selectGun(0, right)) gunId = 0;
+            }
+        }*/
+
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            if (godMode) godMode = false;
+            else godMode = true;
+        }
+
+        if (Input.GetKey(KeyCode.T))
+        {
+            if (!isDodging) StartCoroutine(DoDodge());
+        }
     }
 
     // Update is called once per frame
@@ -82,22 +119,6 @@ public class MovePlayer : MonoBehaviour
     {
         CharacterController charControl = GetComponent<CharacterController>();
         Vector3 position;
-
-        /*if (Input.GetKey(KeyCode.Alpha1))
-        {
-            scriptGunSystem.selectGun(0, right);
-        }
-        if (Input.GetKey(KeyCode.Alpha2))
-        {
-            scriptGunSystem.selectGun(1, right);
-        }*/
-
-        if (Input.GetKey(KeyCode.T))
-        {
-            if (!isDodging) StartCoroutine(DoDodge());
-        }
-
-        if (Input.GetKey(KeyCode.H)) TakeDamage(25);
 
         // Left-right movement
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
@@ -107,7 +128,7 @@ public class MovePlayer : MonoBehaviour
             Vector3 direction, target;
 
             position = transform.position;
-            angle = rotationSpeed * Time.deltaTime;
+            angle = speed * Time.deltaTime;
             direction = position - transform.parent.position;
             if (Input.GetKey(KeyCode.A))
             {
@@ -182,7 +203,7 @@ public class MovePlayer : MonoBehaviour
      * public void UnlockGun(int id)
     {
         scriptGunSystem.UnlockGun(id);
-        scriptGunSystem.selectGun(id, right);
+        if (scriptGunSystem.selectGun(id, right)) gunId = id;
     }
 
     public void addBullets(int id, int num)
@@ -195,12 +216,12 @@ public class MovePlayer : MonoBehaviour
         isDodging = true;
         godMode = true;
         gameObject.layer = dodgeLayer;
-        rotationSpeed += 100;
+        speed = rotationSpeed + 100;
 
         yield return new WaitForSeconds(dodgeTime);
 
         gameObject.layer = originalLayer;
-        rotationSpeed -= 100;
+        speed = rotationSpeed;
 
         yield return new WaitForSeconds(dodgeWaitTime);
         isDodging = false;
@@ -220,6 +241,31 @@ public class MovePlayer : MonoBehaviour
                 // Obtener el da�o de la bala y aplicarlo a la funci�n TakeDamage
                 TakeDamage(cross.damage);
             }
+        }
+
+        if (other.CompareTag("Grave"))
+        {
+            speed = graveTrapSpeed;
+            StartCoroutine(DamageOnTrap());
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Grave"))
+        {
+            onTrap = false;
+            speed = rotationSpeed;
+        }
+    }
+
+    private IEnumerator DamageOnTrap()
+    {
+        onTrap = true;
+        while (onTrap)
+        {
+            TakeDamage(graveTrapDamage);
+            yield return new WaitForSeconds(1f);
         }
     }
 }

@@ -41,7 +41,7 @@ public class Gun : MonoBehaviour
             direction = false;
         }
         // Verificar si se presiona la tecla "G"
-        if (Input.GetKeyDown(KeyCode.G))
+        if (Input.GetKeyDown(KeyCode.K))
         {
             //Debug.Log("G apretada");
             if (numBullets > 0)
@@ -65,6 +65,11 @@ public class Gun : MonoBehaviour
                 --numBullets;
                 //scriptGunDisplay.UpdateBulletsCount(numBullets);
             }
+        }
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            numBullets = maxCapacity;
+            //scriptGunDisplay.UpdateBulletsCount(numBullets);
         }
     }
 
